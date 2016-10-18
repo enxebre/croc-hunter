@@ -26,6 +26,10 @@ node {
 
   stage ('preparation') {
 
+  sh "wget http://storage.googleapis.com/kubernetes-helm/helm-v2.0.0-alpha.5-linux-amd64.tar.gz -O /tmp/helm.tar.gz"
+  sh "tar -C /tmp -xvzf /tmp/helm.tar.gz"
+  sh "cp /tmp/linux-amd64/helm /usr/local/linux-amd64/helm"
+
   sh "env | sort"
 
   sh "mkdir -p ${workDir}"
@@ -69,15 +73,20 @@ node {
   // def pipeline = load("lib/jenkins-pipeline/pipeline.groovy")
   // pipeline.kubectlProxy()
 
-  sh "kubectl proxy &"
-  sh "kubectl --server=http://localhost:8001 get nodes"
+  def name = "croc-hunter"
+  def replicas = "3"
+  def cpu = "10m"
+  def memory = "128Mi"
 
+  sh "kubectl proxy &"
+  sh "sleep 5"
+  sh "kubectl --server=http://localhost:8001 get nodes"
 
   sh "/usr/local/linux-amd64/helm init"
 
-  sh "/usr/local/linux-amd64/helm status ${config.app.name} || /usr/local/linux-amd64/helm install ${pwd}/charts/croc-hunter --name ${config.app.name} --set ImageTag=${env.BUILD_NUMBER},Replicas=${config.app.replicas},Cpu=${config.app.cpu},Memory=${config.app.memory} --namespace=${config.app.name}"
+  sh "/usr/local/linux-amd64/helm status croc-hunter || /usr/local/linux-amd64/helm install ${pwd}/charts/croc-hunter --name ${name} --set ImageTag=${env.BUILD_NUMBER},Replicas=${replicas},Cpu=${cpu},Memory=${memory} --namespace=${name}"
 
-  sh "/usr/local/linux-amd64/helm upgrade ${config.app.name} ${pwd}/charts/croc-hunter --set ImageTag=${env.BUILD_NUMBER},Replicas=${config.app.replicas},Cpu=${config.app.cpu},Memory=${config.app.memory}"
-  
+  sh "/usr/local/linux-amd64/helm upgrade croc-hunter ${pwd}/charts/croc-hunter --set ImageTag=${env.BUILD_NUMBER},Replicas=${replicas},Cpu=${cpu},Memory=${memory}" 
+
   }
 }
