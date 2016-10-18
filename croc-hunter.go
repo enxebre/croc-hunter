@@ -50,7 +50,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	release = os.Getenv("WORKFLOW_RELEASE")
+	release = os.Getenv("VERSION")
         if release == "" {
                 release = "unknown"
         }

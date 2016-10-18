@@ -42,7 +42,7 @@ var html = `
         <script src='/static/game.js'></script>
         <div class="details">
 		<strong>Hostname:</strong> %s<br>
-		<strong>Version:</strong> %s<br>
+		<strong>Version:</strong> v%s<br>
 		<strong>Powered By:</strong> %s<br>
         </div>
     </body>

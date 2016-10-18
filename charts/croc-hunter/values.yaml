@@ -14,3 +14,4 @@ ImageTag: "latest"
 ImagePullPolicy: "Always"
 Cpu: "10m"
 Memory: "128Mi"
+Version: 0
